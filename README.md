@@ -11,7 +11,7 @@ _Artist/Album [Year]/Track number. Track name.mp3_
 The album cover image must be a jpg or png file and be located in the album directory.
 
 ```bash
-python fill_mp3_tags.py
+python fill_mp3_tags.py -d <directory>
 ```
 
 ## Prerequisites
@@ -22,4 +22,5 @@ pip install mutagen
 
 ## Parameters
 
-- `root_dir`: The root directory of the music library.
+- `-d`, `--dir <dir>`: root directory containing the `Artist/Album [Year]/Track.mp3` structure
+- `-h`, `--help`: display help
