@@ -67,16 +67,16 @@ def fillMP3Tags(directory):
 
             # Clean Album Name (optional: removes the year from the tag if you want)
             # e.g., "Greatest Hits (2024)" becomes just "Greatest Hits"
-            album_name = re.sub(r'[\(\[\s]*(19|20)\d{2}[\)\]\s]*', '', album_folder).strip()
+            album_name = re.sub(r'\s\([\(]*(19|20)\d{2}[\)]*\)', '', album_folder).strip()
 
-            print(f"Processing album: {artist}/{album_name} [{year or 'No Year'}]...")
+            print(f"Processing album: {artist}/{album_name} ({year or 'No Year'}) ...")
 
             # --- Image Handling ---
             cover_data = None
             mime_type = None
             for file in os.listdir(album_path):
                 if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                    print(f"Found cover: {artist}/{album_name} [{year or 'No Year'}]/{file}")
+                    print(f"Found cover: {artist}/{album_name} ({year or 'No Year'})/{file}")
                     with open(os.path.join(album_path, file), 'rb') as f:
                         cover_data = f.read()
                     mime_type = 'image/png' if file.lower().endswith('.png') else 'image/jpeg'
@@ -113,7 +113,7 @@ def fillMP3Tags(directory):
 
                     # Save with ID3 v2.3
                     audio.save(v2_version=3)
-                    print(f"Processed: {artist}/{album_name} [{year or 'No Year'}]/{title_part}.mp3")
+                    print(f"Processed: {artist}/{album_name} ({year or 'No Year'})/{title_part}.mp3")
 
 
 def printHelp():
@@ -121,7 +121,7 @@ def printHelp():
     print('Usage: python fill_mp3_tags.py -d <directory>')
     print()
     print("Options:")
-    print("  -d, --dir <dir>:  root directory containing Artist/Album/Track structure")
+    print("  -d, --dir <dir>:  root directory containing Artist/Album (Year)/Track structure")
     print("  -h, --help:       display help")
     print()
 

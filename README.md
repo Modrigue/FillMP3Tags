@@ -6,7 +6,7 @@ This script automatically fills the tags of MP3 files in a directory tree with t
 
 MP3 directories must be formatted as follows:
 
-_Artist/Album [Year]/Track number. Track name.mp3_
+_Artist/Album (Year)/Track number. Track name.mp3_
 
 The album cover image must be a jpg or png file and be located in the album directory.
 
@@ -22,5 +22,5 @@ pip install mutagen
 
 ## Parameters
 
-- `-d`, `--dir <dir>`: root directory containing the `Artist/Album [Year]/Track.mp3` structure
+- `-d`, `--dir <dir>`: root directory containing the `Artist/Album (Year)/Track.mp3` structure
 - `-h`, `--help`: display help
