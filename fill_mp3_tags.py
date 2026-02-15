@@ -108,6 +108,10 @@ def fillMP3Tags(directory):
                     audio.tags.add(TIT2(encoding=3, text=title_part))
 
                     if year:
+                        # Remove existing year tags to prevent duplication on re-runs
+                        for year_tag in ['TYER', 'TDRC']:
+                            if year_tag in audio.tags:
+                                del audio.tags[year_tag]
                         audio.tags.add(TYER(encoding=3, text=year))
 
                     if cover_data:
