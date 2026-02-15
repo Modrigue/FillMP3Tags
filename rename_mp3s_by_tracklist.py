@@ -128,6 +128,21 @@ def find_matching_mp3(track_name, mp3_files):
     return None
 
 
+def sanitize_track_name(track_name):
+    """Sanitize track name by removing forbidden filename characters.
+    Slashes and backslashes are replaced with '-', other forbidden chars are removed.
+    """
+    # Replace slashes and backslashes with '-'
+    sanitized = track_name.replace('/', '-').replace('\\', '-')
+    
+    # Remove other Windows forbidden characters: < > : " | ? *
+    forbidden_chars = '<>:"|?*'
+    for char in forbidden_chars:
+        sanitized = sanitized.replace(char, '')
+    
+    return sanitized
+
+
 def rename_album_mp3s(album_path, tracklist_path):
     """Rename MP3 files in a single album folder"""
     import re
@@ -152,7 +167,9 @@ def rename_album_mp3s(album_path, tracklist_path):
         matching_file = find_matching_mp3(track_name, mp3_files)
 
         if matching_file:
-            new_name = f"{track_num:02d}. {track_name}.mp3"
+            # Sanitize track name for valid filename
+            safe_track_name = sanitize_track_name(track_name)
+            new_name = f"{track_num:02d}. {safe_track_name}.mp3"
             new_path = os.path.join(album_path, new_name)
 
             if os.path.exists(new_path) and new_path != matching_file:
