@@ -20,7 +20,7 @@ python fill_mp3_tags.py -d <directory>
 
 ## rename_mp3s_by_tracklist.py
 
-Renames MP3 files based on a tracklist from a YouTube playlist. The tracklist file (`tracklist_from_youtube_playlist.txt`) must be present in each album folder.
+Renames MP3 files based on a tracklist from a YouTube playlist. The first `.txt` file found in each album folder is used as the tracklist.
 
 The tracklist format expects:
 

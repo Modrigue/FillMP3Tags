@@ -50,19 +50,26 @@ def renameMP3s(directory):
     print("Renaming MP3 files in", directory, "...")
     print()
 
+    # Process each artist folder
     for artist in os.listdir(directory):
         artist_path = os.path.join(directory, artist)
         if not os.path.isdir(artist_path):
             continue
 
+        # Process each album folder
         for album_folder in os.listdir(artist_path):
             album_path = os.path.join(artist_path, album_folder)
             if not os.path.isdir(album_path):
                 continue
 
-            tracklist_path = os.path.join(album_path, "tracklist_from_youtube_playlist.txt")
+            # get tracklist from the first .txt file found in the album folder
+            tracklist_path = None
+            for file in os.listdir(album_path):
+                if file.lower().endswith('.txt'):
+                    tracklist_path = os.path.join(album_path, file)
+                    break
 
-            if not os.path.exists(tracklist_path):
+            if not tracklist_path:
                 continue
 
             print(f"Processing album: {artist}/{album_folder} ...")
@@ -77,9 +84,11 @@ def parse_tracklist(tracklist_path):
     """
     tracks = {}
 
+
     with open(tracklist_path, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f.readlines()]
 
+    # Process each entry in the tracklist
     i = 0
     while i < len(lines):
         line = lines[i]
@@ -105,8 +114,10 @@ def find_matching_mp3(track_name, mp3_files):
     def normalize(s):
         return s.lower().replace("'", "").replace(" ", "").replace(".", "").replace(",", "")
 
+    # Normalize track name
     normalized_track = normalize(track_name)
 
+    # Find matching MP3 file
     for mp3_file in mp3_files:
         filename = os.path.splitext(os.path.basename(mp3_file))[0]
         normalized_file = normalize(filename)
@@ -126,13 +137,16 @@ def rename_album_mp3s(album_path, tracklist_path):
     # Filter out files already renamed with track number prefix (e.g., "01. ", "02. ")
     mp3_files = [f for f in all_mp3_files if not re.match(r'^\d{2}\. ', os.path.basename(f))]
     
+    # Count skipped files
     skipped_count = len(all_mp3_files) - len(mp3_files)
     if skipped_count > 0:
         print(f"  Skipped {skipped_count} already-renamed file(s)")
 
+    # Parse tracklist
     tracks = parse_tracklist(tracklist_path)
     print(f"  Found {len(tracks)} tracks in tracklist")
 
+    # Rename MP3 files
     renamed_count = 0
     for track_name, track_num in tracks.items():
         matching_file = find_matching_mp3(track_name, mp3_files)
