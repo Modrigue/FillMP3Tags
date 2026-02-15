@@ -52,10 +52,12 @@ def fillMP3Tags(directory):
     print("Filling MP3 tags in", directory, "...")
     print()
 
+    # Process each artist folder
     for artist in os.listdir(directory):
         artist_path = os.path.join(directory, artist)
         if not os.path.isdir(artist_path): continue
 
+        # Process each album folder
         for album_folder in os.listdir(artist_path):
             album_path = os.path.join(artist_path, album_folder)
             if not os.path.isdir(album_path): continue
