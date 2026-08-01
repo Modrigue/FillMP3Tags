@@ -9,6 +9,7 @@ import sys
 import getopt
 import glob
 import platform
+import math
 
 # Files directory
 ROOT_DIR = ""
@@ -80,10 +81,12 @@ def renameMP3s(directory):
 def parse_tracklist(tracklist_path):
     """Parse tracklist file and return dict of {track_name: track_number}
 
-    Track number is on line 1, track name is on line 5 of each entry.
+    New format: duration on line (e.g., "5:07"), track name on next line.
+    Track numbers are assigned sequentially based on order in file.
+    Handles variable blank lines between entries.
     """
     tracks = {}
-
+    track_num = 1
 
     with open(tracklist_path, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f.readlines()]
@@ -93,15 +96,17 @@ def parse_tracklist(tracklist_path):
     while i < len(lines):
         line = lines[i]
 
-        # Check if this line is a track number
-        if line.isdigit() and i + 4 < len(lines):
-            track_num = int(line)
-            track_name = lines[i + 4]
+        # Check if this line is a duration (format "X:XX" or "XX:XX")
+        if ':' in line and i + 1 < len(lines):
+            # Track name is on the next line
+            track_name = lines[i + 1]
 
             # Validate: track name should not be metadata (empty, view counts, etc.)
             if track_name and not any(pattern in track_name.lower() for pattern in ["vues", "views", "il y a"]):
                 tracks[track_name] = track_num
-                i += 9  # Skip to next entry (9 lines per entry including blank line)
+                track_num += 1
+                # Move to next line and let the loop find the next duration
+                i += 1
                 continue
 
         i += 1
@@ -149,8 +154,8 @@ def rename_album_mp3s(album_path, tracklist_path):
     
     all_mp3_files = glob.glob(os.path.join(album_path, "*.mp3"))
     
-    # Filter out files already renamed with track number prefix (e.g., "01. ", "02. ")
-    mp3_files = [f for f in all_mp3_files if not re.match(r'^\d{2}\. ', os.path.basename(f))]
+    # Filter out files already renamed with track number prefix (e.g., "1. ", "01. ", "001. ")
+    mp3_files = [f for f in all_mp3_files if not re.match(r'^\d+\. ', os.path.basename(f))]
     
     # Count skipped files
     skipped_count = len(all_mp3_files) - len(mp3_files)
@@ -159,7 +164,11 @@ def rename_album_mp3s(album_path, tracklist_path):
 
     # Parse tracklist
     tracks = parse_tracklist(tracklist_path)
-    print(f"  Found {len(tracks)} tracks in tracklist")
+    track_count = len(tracks)
+    print(f"  Found {track_count} tracks in tracklist")
+
+    # Calculate number of digits needed based on track count
+    num_digits = int(math.log10(track_count)) + 1 if track_count > 0 else 1
 
     # Rename MP3 files
     renamed_count = 0
@@ -169,7 +178,8 @@ def rename_album_mp3s(album_path, tracklist_path):
         if matching_file:
             # Sanitize track name for valid filename
             safe_track_name = sanitize_track_name(track_name)
-            new_name = f"{track_num:02d}. {safe_track_name}.mp3"
+            # Format track number with dynamic digit count
+            new_name = f"{track_num:0{num_digits}d}. {safe_track_name}.mp3"
             new_path = os.path.join(album_path, new_name)
 
             if os.path.exists(new_path) and new_path != matching_file:
