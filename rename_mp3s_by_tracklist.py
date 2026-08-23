@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*-coding:utf-8 -*-
 
-# Rename MP3 files based on tracklist from YouTube playlist.
+# Rename MP3 files based on tracklist from playlist.
 # Format: "<track_number_with_2_digits>. <track_name>.mp3"
 
 import os

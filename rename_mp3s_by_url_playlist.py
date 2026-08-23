@@ -240,7 +240,7 @@ def rename_album_mp3s(album_path, tracks):
 
 def printHelp():
     print()
-    print('Usage: python rename_mp3s_by_youtube_playlist.py -d <directory> [-p <playlist_url>]')
+    print('Usage: python rename_mp3s_by_url_playlist.py -d <directory> [-p <playlist_url>]')
     print()
     print("Options:")
     print("  -d, --dir <dir>:       root directory containing Artist/Album (Year)/Track structure")

@@ -44,7 +44,7 @@ The script recursively processes all subdirectories matching the `Artist/Album (
 
 ## rename_mp3s_by_url_playlist.py
 
-Renames MP3 files based on track order from an URL playlist. The script fetches the playlist track list and renames MP3 files accordingly.
+Renames MP3 files based on track order from a playlist URL. The script fetches the playlist track list using `yt-dlp` and renames MP3 files accordingly.
 
 The playlist URL can be provided in two ways:
 
@@ -77,4 +77,4 @@ pip install yt-dlp
 
 - `-d`, `--dir <dir>`: root directory containing the `Artist/Album (Year)/` structure
 - `-h`, `--help`: display help
-- `-p`, `--playlist <url>`: URL of the playlist (for `rename_mp3s_by_url_playlist.py` only)
+- `-p`, `--playlist <url>`: playlist URL (for `rename_mp3s_by_url_playlist.py` only)
