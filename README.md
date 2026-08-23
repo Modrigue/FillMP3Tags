@@ -67,9 +67,37 @@ python rename_mp3s_by_url_playlist.py -d <directory>
 
 The script recursively processes all subdirectories matching the `Artist/Album (Year)/` structure.
 
-### Prerequisites
+## fill_mp3_va_tags.py
+
+Fills MP3 tags for Various Artists styles compilations. The script sets the following tags:
+
+- **Artist**: "Various Artists"
+- **Album**: style subdirectory name (or directory name if processing directly)
+- **Title**: "Artist - Song Name" (parsed from filename)
+- **Album Art**: embeds the first image found in the directory as cover art
+
+The script can process either:
+- A directory containing MP3 files directly
+- A parent directory with multiple subdirectories (each subdirectory is treated as a style)
+
+### Usage
 
 ```bash
+# Process a single genre directory
+python fill_mp3_va_tags.py -d "C:\Music\Various Artists\Rock"
+
+# Process parent directory with multiple genres subdirectories
+python fill_mp3_va_tags.py -d "C:\Music\Various Artists"
+```
+
+### Filename Format
+
+MP3 files must follow the format: `Artist - Song Name.mp3`
+
+### Prerequisites (all scripts)
+
+```bash
+pip install mutagen
 pip install yt-dlp
 ```
 
