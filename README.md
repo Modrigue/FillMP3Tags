@@ -94,6 +94,25 @@ python fill_mp3_va_tags.py -d "C:\Music\Various Artists"
 
 MP3 files must follow the format: `Artist - Song Name.mp3`
 
+## tag_misc_audio.py
+
+Tags and renames audio files from artist directories. The script processes audio files in the format: `<Artist>/<Artist> - <Song>.mp3` and:
+
+- Renames files to: `<Song>.mp3`
+- Sets tags: Artist tag, Title tag
+- For collaborations (e.g., `Artist1 & Artist2 - Song.mp3`):
+  - Artist tag: `Artist1 & Artist2`
+  - Album Artist tag: Artist from subdirectory name
+- Supports MP3, OGG, OPUS, AAC, and M4A formats
+
+### Usage
+
+```bash
+python tag_misc_audio.py <source_directory>
+```
+
+The script processes all artist subdirectories in the source directory, renaming and tagging files in place.
+
 ### Prerequisites (all scripts)
 
 ```bash
