@@ -100,9 +100,9 @@ Tags and renames audio files from artist directories. The script processes audio
 
 - Renames files to: `<Song>.mp3`
 - Sets tags: Artist tag, Title tag
-- For collaborations (e.g., `Artist1 & Artist2 - Song.mp3`):
-  - Artist tag: `Artist1 & Artist2`
-  - Album Artist tag: Artist from subdirectory name
+- For collaborations (e.g., `Artist1, Artist2 & Artist3 - Song.mp3` or `Artist1 ft. Artist2 - Song.mp3`):
+  - Artist tag: All artists from filename (e.g., `Artist1, Artist2 & Artist3`)
+  - Album Artist tag: First artist from filename (e.g., `Artist1`)
 - Supports MP3, OGG, OPUS, AAC, and M4A formats
 
 ### Usage

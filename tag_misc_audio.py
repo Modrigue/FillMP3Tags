@@ -5,9 +5,9 @@ Tag Misc Audio Files - Tag audio files from artists directory.
 Parses audio files in the format: <Artist>/<Artist> - <Song>.mp3
 Renames to: <Song>.mp3
 Tags with: Artist: <Artist>, Title: <Song>
-For collaborations (Artist1 & Artist2 - Song.mp3):
-  - Artist tag: Artist1 & Artist2
-  - Album Artist tag: Artist1 (from subdirectory name)
+For collaborations (Artist1, Artist2 & Artist3 - Song.mp3 or Artist1 ft. Artist2 - Song.mp3):
+  - Artist tag: Artist1, Artist2 & Artist3 (from filename)
+  - Album Artist tag: Artist1 (first artist from filename)
 Supports MP3, OGG, OPUS, AAC, and M4A formats.
 """
 
@@ -169,13 +169,22 @@ def process_artist_directory(source_dir):
             skipped_count += 1
             continue
 
-        # Determine if this is a collaboration (contains & in artist from filename)
-        if '&' in file_artist:
-            # File has "Artist1 & Artist2 - Song"
-            # Artist tag: Artist1 & Artist2
-            # Album Artist tag: artist_name (from subdirectory)
+        # Determine if this is a collaboration (contains &, ,, ft, or ft. in artist from filename)
+        # Check for any collaboration separator
+        collaboration_separators = ['&', ',', 'ft', 'ft.']
+        is_collaboration = any(sep in file_artist.lower() for sep in collaboration_separators)
+
+        if is_collaboration:
+            # File has "Artist1, Artist2 & Artist3 - Song" or similar
+            # Artist tag: Artist1, Artist2 & Artist3 (from filename)
+            # Album Artist tag: first artist from filename
             tag_artist = file_artist
-            album_artist = artist_name
+
+            # Extract first artist for Album Artist tag
+            # Split by any collaboration separator and get the first part
+            first_artist = re.split(r'[, &]|ft\.?', file_artist, flags=re.IGNORECASE)[0].strip()
+            album_artist = first_artist
+
             print(f"    Collaboration detected")
             print(f"    Artist tag: {tag_artist}")
             print(f"    Album Artist tag: {album_artist}")
@@ -274,11 +283,12 @@ def process_audio_directory(source_dir):
         if "Summary for" in output:
             lines = output.split('\n')
             for line in lines:
-                if "Processed:" in line:
+                # Only match summary lines (e.g., "    Processed: 5")
+                if re.match(r'\s+Processed:\s+\d+', line):
                     total_processed += int(line.split(':')[1].strip())
-                elif "Skipped:" in line:
+                elif re.match(r'\s+Skipped:\s+\d+', line):
                     total_skipped += int(line.split(':')[1].strip())
-                elif "Errors:" in line:
+                elif re.match(r'\s+Errors:\s+\d+', line):
                     total_errors += int(line.split(':')[1].strip())
 
     print("\n" + "=" * 60)
